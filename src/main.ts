@@ -1,6 +1,7 @@
 import { Logger } from '@common/logger/logger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ExceptionsFilter } from '@common/error-handling/exceptions.filter';
 
 async function bootstrap() {
   const logger = new Logger('App');
@@ -9,6 +10,7 @@ async function bootstrap() {
   
   app.enableCors();
   app.setGlobalPrefix('api');
+  app.useGlobalFilters(new ExceptionsFilter());
 
   const PORT = process.env.PORT || 3000;
   await app.listen(PORT);
