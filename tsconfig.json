@@ -4,6 +4,7 @@
     "target": "ES2020",
     "outDir": "dist",
     "rootDir": "src",
+    "baseUrl": ".",
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -11,7 +12,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@common/*": ["./src/common/*"],
-      "@modules/*": ["./src/modules/*"]
+      "@modules/*": ["./src/modules/*"],
+      "@auth/*": ["./src/modules/auth/*"]
     }
   },
   "exclude": ["node_modules", "dist", "jest.config.ts"]

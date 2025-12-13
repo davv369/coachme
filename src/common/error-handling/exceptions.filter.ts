@@ -90,6 +90,10 @@ export class ExceptionsFilter implements ExceptionFilter {
       errorCode = InternalErrorCode.NOT_FOUND;
     } else if (status === HttpStatus.BAD_REQUEST) {
       errorCode = InternalErrorCode.VALIDATION_ERROR;
+    } else if (status === HttpStatus.UNAUTHORIZED) {
+      errorCode = InternalErrorCode.UNAUTHORIZED;
+    } else if (status === HttpStatus.FORBIDDEN) {
+      errorCode = InternalErrorCode.FORBIDDEN;
     } else {
       errorCode = InternalErrorCode.INTERNAL_SERVER_ERROR;
     }
@@ -130,10 +134,12 @@ export class ExceptionsFilter implements ExceptionFilter {
     const mapping: Record<InternalErrorCode, number> = {
       [InternalErrorCode.VALIDATION_ERROR]: HttpStatus.BAD_REQUEST,
       [InternalErrorCode.NOT_FOUND]: HttpStatus.NOT_FOUND,
-      [InternalErrorCode.INTERNAL_SERVER_ERROR]: HttpStatus.INTERNAL_SERVER_ERROR,
+      [InternalErrorCode.UNAUTHORIZED]: HttpStatus.UNAUTHORIZED,
+      [InternalErrorCode.FORBIDDEN]: HttpStatus.FORBIDDEN,
+      [InternalErrorCode.INTERNAL_SERVER_ERROR]:
+        HttpStatus.INTERNAL_SERVER_ERROR,
     };
 
     return mapping[errorCode] || HttpStatus.BAD_REQUEST;
   }
 }
-
