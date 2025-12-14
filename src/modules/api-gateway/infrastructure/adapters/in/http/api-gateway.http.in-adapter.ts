@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Inject } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Logger } from '@common/logger/logger';
 import {
   Authenticated,
@@ -16,6 +17,7 @@ import { RefreshTokenRequestDto, RefreshTokenResponseDto } from '@common/dto/api
 import { BootstrapAdminRequestDto, BootstrapAdminResponseDto } from '@common/dto/api-gateway/auth/bootstrap.dto';
 import { MeResponseDto } from '@common/dto/api-gateway/auth/me.dto';
 
+@ApiTags('API Gateway')
 @Controller()
 export class ApiGatewayHttpInAdapter {
   private readonly logger = new Logger(ApiGatewayHttpInAdapter.name);
