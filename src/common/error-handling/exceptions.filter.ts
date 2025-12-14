@@ -94,6 +94,8 @@ export class ExceptionsFilter implements ExceptionFilter {
       errorCode = InternalErrorCode.UNAUTHORIZED;
     } else if (status === HttpStatus.FORBIDDEN) {
       errorCode = InternalErrorCode.FORBIDDEN;
+    } else if (status === HttpStatus.CONFLICT) {
+      errorCode = InternalErrorCode.USER_ALREADY_EXISTS;
     } else {
       errorCode = InternalErrorCode.INTERNAL_SERVER_ERROR;
     }
@@ -136,6 +138,8 @@ export class ExceptionsFilter implements ExceptionFilter {
       [InternalErrorCode.NOT_FOUND]: HttpStatus.NOT_FOUND,
       [InternalErrorCode.UNAUTHORIZED]: HttpStatus.UNAUTHORIZED,
       [InternalErrorCode.FORBIDDEN]: HttpStatus.FORBIDDEN,
+      [InternalErrorCode.INVALID_CREDENTIALS]: HttpStatus.UNAUTHORIZED,
+      [InternalErrorCode.USER_ALREADY_EXISTS]: HttpStatus.CONFLICT,
       [InternalErrorCode.INTERNAL_SERVER_ERROR]:
         HttpStatus.INTERNAL_SERVER_ERROR,
     };

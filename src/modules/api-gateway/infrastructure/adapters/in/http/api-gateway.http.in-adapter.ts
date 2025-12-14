@@ -1,18 +1,29 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Inject } from '@nestjs/common';
 import { Logger } from '@common/logger/logger';
 import {
   Authenticated,
   CurrentUser,
 } from '@modules/auth/application/decorators';
 import { JwtPayload } from '@modules/auth/domain/jwt-payload';
-import { JwtService } from '@modules/auth/application/services/jwt.service';
 import { UserRole } from '@modules/auth/domain/user-role';
+import {
+  API_GATEWAY_AUTH_IN_PORT,
+  ApiGatewayAuthInPort,
+} from '../../../../application/ports/in/auth.in-port';
+import { LoginRequestDto, LoginResponseDto } from '@common/dto/api-gateway/auth/login.dto';
+import { RegisterRequestDto, RegisterResponseDto } from '@common/dto/api-gateway/auth/register.dto';
+import { RefreshTokenRequestDto, RefreshTokenResponseDto } from '@common/dto/api-gateway/auth/refresh-token.dto';
+import { BootstrapAdminRequestDto, BootstrapAdminResponseDto } from '@common/dto/api-gateway/auth/bootstrap.dto';
+import { MeResponseDto } from '@common/dto/api-gateway/auth/me.dto';
 
 @Controller()
 export class ApiGatewayHttpInAdapter {
   private readonly logger = new Logger(ApiGatewayHttpInAdapter.name);
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    @Inject(API_GATEWAY_AUTH_IN_PORT)
+    private readonly authInPort: ApiGatewayAuthInPort,
+  ) {}
 
   @Get()
   getRoot() {
@@ -32,79 +43,56 @@ export class ApiGatewayHttpInAdapter {
   }
 
   @Post('auth/login')
-  async login(@Body() body: { email: string; password: string }) {
+  async login(@Body() body: LoginRequestDto): Promise<LoginResponseDto> {
     this.logger.log(`Login attempt for email: ${body.email}`);
-    // TODO: Implement login logic with auth module
-    return {
-      message: 'Login endpoint - to be implemented',
+    return this.authInPort.login({
       email: body.email,
-    };
+      password: body.password,
+    });
   }
 
   @Post('auth/register')
-  async register(
-    @Body()
-    body: {
-      email: string;
-      password: string;
-      name: string;
-      role: string;
-    },
-  ) {
+  @Authenticated({ requiredRoles: [UserRole.ADMIN] })
+  async register(@Body() body: RegisterRequestDto): Promise<RegisterResponseDto> {
     this.logger.log(`Register attempt for email: ${body.email}`);
-    // TODO: Implement register logic with users and auth modules
-    return {
-      message: 'Register endpoint - to be implemented',
+    return this.authInPort.register({
       email: body.email,
-    };
+      password: body.password,
+      name: body.name,
+      role: body.role,
+    });
   }
 
   @Post('auth/refresh')
-  async refresh(@Body() _body: { refreshToken: string }) {
+  async refresh(@Body() body: RefreshTokenRequestDto): Promise<RefreshTokenResponseDto> {
     this.logger.log('Refresh token request');
-    // TODO: Implement refresh token logic with auth module
-    return {
-      message: 'Refresh endpoint - to be implemented',
-    };
-  }
-
-  @Post('auth/test-token')
-  async generateTestTokenPost(
-    @Body() body: { userId?: string; email?: string; role?: UserRole },
-  ) {
-    this.logger.log(`Generating test token for ${body.email || 'default'}`);
-    const tokens = this.jwtService.generateTokenPair(
-      body.userId || 'test-user-id',
-      body.email || 'test@example.com',
-      body.role || UserRole.ATHLETE,
-    );
-    return {
-      message: 'Test token generated',
-      ...tokens,
-    };
-  }
-
-  @Get('auth/test-token')
-  async generateTestTokenGet() {
-    this.logger.log('Generating default test token');
-    const tokens = this.jwtService.generateTokenPair(
-      'test-user-id',
-      'test@example.com',
-      UserRole.TRAINER,
-    );
-    return {
-      ...tokens,
-    };
+    return this.authInPort.refreshToken({
+      refreshToken: body.refreshToken,
+    });
   }
 
   @Get('me')
   @Authenticated()
-  async getMe(@CurrentUser() user: JwtPayload) {
+  async getMe(@CurrentUser() user: JwtPayload): Promise<MeResponseDto> {
     this.logger.log(`User ${user.email} accessed /me endpoint`);
     return {
       userId: user.sub,
       email: user.email,
       role: user.role,
+    };
+  }
+
+  @Post('auth/bootstrap')
+  async bootstrap(@Body() body: BootstrapAdminRequestDto): Promise<BootstrapAdminResponseDto> {
+    this.logger.log('Bootstrap admin request');
+    const tokens = await this.authInPort.bootstrapAdmin({
+      email: body.email,
+      password: body.password,
+      name: body.name,
+    });
+    return {
+      message: 'First admin user created successfully',
+      ...tokens,
     };
   }
 }
