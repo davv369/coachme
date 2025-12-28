@@ -16,4 +16,3 @@ export interface UserReaderOutPort {
   hasAdmin(request: FindUserByRoleRequest): Promise<boolean>;
   verifyPassword(user: User, password: string): Promise<boolean>;
 }
-

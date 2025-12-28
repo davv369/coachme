@@ -1,9 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AuthInPort } from '../ports/in/auth.in-port';
-import { LoginRequestDto, LoginResponseDto } from '@common/dto/api-gateway/auth/login.dto';
-import { RegisterRequestDto, RegisterResponseDto } from '@common/dto/api-gateway/auth/register.dto';
-import { RefreshTokenRequestDto, RefreshTokenResponseDto } from '@common/dto/api-gateway/auth/refresh-token.dto';
-import { BootstrapAdminRequestDto, BootstrapAdminResponseDto } from '@common/dto/api-gateway/auth/bootstrap.dto';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+} from '@common/dto/api-gateway/auth/login.dto';
+import {
+  RegisterRequestDto,
+  RegisterResponseDto,
+} from '@common/dto/api-gateway/auth/register.dto';
+import {
+  RefreshTokenRequestDto,
+  RefreshTokenResponseDto,
+} from '@common/dto/api-gateway/auth/refresh-token.dto';
+import {
+  BootstrapAdminRequestDto,
+  BootstrapAdminResponseDto,
+} from '@common/dto/api-gateway/auth/bootstrap.dto';
 import {
   JWT_GENERATOR_OUT_PORT,
   JwtGeneratorOutPort,
@@ -32,7 +44,9 @@ export class AuthService implements AuthInPort {
   ) {}
 
   async login(command: LoginRequestDto): Promise<LoginResponseDto> {
-    const user = await this.userReader.findUserByEmail({ email: command.email });
+    const user = await this.userReader.findUserByEmail({
+      email: command.email,
+    });
     if (!user) {
       throw new DomainException(
         InternalErrorCode.INVALID_CREDENTIALS,
@@ -98,7 +112,9 @@ export class AuthService implements AuthInPort {
     };
   }
 
-  async refreshToken(command: RefreshTokenRequestDto): Promise<RefreshTokenResponseDto> {
+  async refreshToken(
+    command: RefreshTokenRequestDto,
+  ): Promise<RefreshTokenResponseDto> {
     try {
       const payload = this.jwtGenerator.verifyToken({
         token: command.refreshToken,
@@ -134,7 +150,9 @@ export class AuthService implements AuthInPort {
     }
   }
 
-  async bootstrapAdmin(command: BootstrapAdminRequestDto): Promise<BootstrapAdminResponseDto> {
+  async bootstrapAdmin(
+    command: BootstrapAdminRequestDto,
+  ): Promise<BootstrapAdminResponseDto> {
     const hasAdmin = await this.userReader.hasAdmin({ role: UserRole.ADMIN });
     if (hasAdmin) {
       throw new DomainException(
@@ -172,4 +190,3 @@ export class AuthService implements AuthInPort {
     };
   }
 }
-

@@ -33,6 +33,7 @@ export const setupDocumentation = async (
     },
   });
 
-  logger.log(`📚 Swagger documentation available at http://localhost:${port}/docs`);
+  logger.log(
+    `📚 Swagger documentation available at http://localhost:${port}/docs`,
+  );
 };
-

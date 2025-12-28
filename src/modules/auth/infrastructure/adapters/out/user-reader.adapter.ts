@@ -5,7 +5,10 @@ import {
   FindUserByRoleRequest,
   UserReaderOutPort,
 } from '../../../application/ports/out/user-reader.out-port';
-import { USER_IN_PORT, UserInPort } from '@modules/users/application/ports/in/user.in-port';
+import {
+  USER_IN_PORT,
+  UserInPort,
+} from '@modules/users/application/ports/in/user.in-port';
 
 @Injectable()
 export class UserReaderAdapter implements UserReaderOutPort {
@@ -15,7 +18,9 @@ export class UserReaderAdapter implements UserReaderOutPort {
   ) {}
 
   async findUserByEmail(request: FindUserByEmailRequest): Promise<User | null> {
-    const user = await this.userInPort.findUserByEmail({ email: request.email });
+    const user = await this.userInPort.findUserByEmail({
+      email: request.email,
+    });
     if (!user) {
       return null;
     }
@@ -48,4 +53,3 @@ export class UserReaderAdapter implements UserReaderOutPort {
     };
   }
 }
-

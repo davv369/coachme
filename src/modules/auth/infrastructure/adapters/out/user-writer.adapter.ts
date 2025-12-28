@@ -3,7 +3,10 @@ import {
   CreateUserRequest,
   UserWriterOutPort,
 } from '../../../application/ports/out/user-writer.out-port';
-import { USER_IN_PORT, UserInPort } from '@modules/users/application/ports/in/user.in-port';
+import {
+  USER_IN_PORT,
+  UserInPort,
+} from '@modules/users/application/ports/in/user.in-port';
 import { User } from '@modules/users/domain/user.entity';
 
 @Injectable()
@@ -32,4 +35,3 @@ export class UserWriterAdapter implements UserWriterOutPort {
     };
   }
 }
-

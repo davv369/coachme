@@ -50,4 +50,3 @@ export class RegisterResponseDto {
   })
   refreshToken: string;
 }
-

@@ -51,4 +51,3 @@ export class UserInMemoryRepository implements UserRepositoryOutPort {
     return null;
   }
 }
-

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
-import { JwtService } from '../../../application/services/jwt.service';
+import { JwtService } from '@auth/application/services/jwt.service';
 import {
   GenerateTokenPairRequest,
   JwtGeneratorOutPort,
   VerifyTokenRequest,
-} from '../../../application/ports/out/jwt-generator.out-port';
-import { JwtPayload } from '../../../domain/jwt-payload';
+} from '@auth/application/ports/out/jwt-generator.out-port';
+import { JwtPayload } from '@auth/domain/jwt-payload';
 
 @Injectable()
 export class JwtGeneratorAdapter implements JwtGeneratorOutPort {
@@ -24,4 +23,3 @@ export class JwtGeneratorAdapter implements JwtGeneratorOutPort {
     return this.jwtService.verifyToken(request.token);
   }
 }
-

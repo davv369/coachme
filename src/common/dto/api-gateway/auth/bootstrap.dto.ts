@@ -46,4 +46,3 @@ export class BootstrapAdminResponseDto {
   })
   refreshToken: string;
 }
-

@@ -24,4 +24,3 @@ export interface UserInPort {
   verifyPassword(user: User, password: string): Promise<boolean>;
   hasAdmin(query: HasAdminQuery): Promise<boolean>;
 }
-

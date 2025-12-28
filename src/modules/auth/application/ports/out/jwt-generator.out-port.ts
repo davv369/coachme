@@ -22,4 +22,3 @@ export interface JwtGeneratorOutPort {
   generateTokenPair(request: GenerateTokenPairRequest): TokenPair;
   verifyToken(request: VerifyTokenRequest): JwtPayload;
 }
-

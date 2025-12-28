@@ -11,10 +11,22 @@ import {
   API_GATEWAY_AUTH_IN_PORT,
   ApiGatewayAuthInPort,
 } from '../../../../application/ports/in/auth.in-port';
-import { LoginRequestDto, LoginResponseDto } from '@common/dto/api-gateway/auth/login.dto';
-import { RegisterRequestDto, RegisterResponseDto } from '@common/dto/api-gateway/auth/register.dto';
-import { RefreshTokenRequestDto, RefreshTokenResponseDto } from '@common/dto/api-gateway/auth/refresh-token.dto';
-import { BootstrapAdminRequestDto, BootstrapAdminResponseDto } from '@common/dto/api-gateway/auth/bootstrap.dto';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+} from '@common/dto/api-gateway/auth/login.dto';
+import {
+  RegisterRequestDto,
+  RegisterResponseDto,
+} from '@common/dto/api-gateway/auth/register.dto';
+import {
+  RefreshTokenRequestDto,
+  RefreshTokenResponseDto,
+} from '@common/dto/api-gateway/auth/refresh-token.dto';
+import {
+  BootstrapAdminRequestDto,
+  BootstrapAdminResponseDto,
+} from '@common/dto/api-gateway/auth/bootstrap.dto';
 import { MeResponseDto } from '@common/dto/api-gateway/auth/me.dto';
 
 @ApiTags('API Gateway')
@@ -55,7 +67,9 @@ export class ApiGatewayHttpInAdapter {
 
   @Post('auth/register')
   @Authenticated({ requiredRoles: [UserRole.ADMIN] })
-  async register(@Body() body: RegisterRequestDto): Promise<RegisterResponseDto> {
+  async register(
+    @Body() body: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> {
     this.logger.log(`Register attempt for email: ${body.email}`);
     return this.authInPort.register({
       email: body.email,
@@ -66,7 +80,9 @@ export class ApiGatewayHttpInAdapter {
   }
 
   @Post('auth/refresh')
-  async refresh(@Body() body: RefreshTokenRequestDto): Promise<RefreshTokenResponseDto> {
+  async refresh(
+    @Body() body: RefreshTokenRequestDto,
+  ): Promise<RefreshTokenResponseDto> {
     this.logger.log('Refresh token request');
     return this.authInPort.refreshToken({
       refreshToken: body.refreshToken,
@@ -85,7 +101,9 @@ export class ApiGatewayHttpInAdapter {
   }
 
   @Post('auth/bootstrap')
-  async bootstrap(@Body() body: BootstrapAdminRequestDto): Promise<BootstrapAdminResponseDto> {
+  async bootstrap(
+    @Body() body: BootstrapAdminRequestDto,
+  ): Promise<BootstrapAdminResponseDto> {
     this.logger.log('Bootstrap admin request');
     const tokens = await this.authInPort.bootstrapAdmin({
       email: body.email,

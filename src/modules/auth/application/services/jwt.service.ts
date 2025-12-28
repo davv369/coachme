@@ -15,8 +15,7 @@ export class JwtService {
 
   constructor(private readonly configService: ConfigService) {
     this.secret =
-      this.configService.get<string>('JWT_SECRET') ||
-      'my-secret-key';
+      this.configService.get<string>('JWT_SECRET') || 'my-secret-key';
   }
 
   generateAccessToken(userId: string, email: string, role: UserRole): string {

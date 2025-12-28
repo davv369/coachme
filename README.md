@@ -8,11 +8,26 @@ A NestJS application for trainers and athletes (mountain runners) built with **H
 
 - Node.js (v18 or higher)
 - npm or yarn
+- Docker and Docker Compose (for database)
 
 ### Installation
 
+1. Install dependencies:
+
 ```bash
 npm install
+```
+
+2. Start PostgreSQL database:
+
+```bash
+docker-compose -f docker/docker-compose.dev.yml up -d
+```
+
+3. Run database migrations:
+
+```bash
+npm run migrate:latest
 ```
 
 ### Running the Application
@@ -165,14 +180,81 @@ curl -X POST http://localhost:3000/api/auth/register \
 - **TRAINER**: Can plan and manage training sessions
 - **ATHLETE**: Can view and complete training sessions
 
+## 🗄️ Database Setup
+
+### Environment Configuration
+
+Create a `.env` file in the project root with the following variables (or use the defaults):
+
+```env
+DB_HOST=localhost
+DB_PORT=5433
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=coachme
+DB_SSL=false
+```
+
+### Using Docker Compose (Recommended)
+
+Start PostgreSQL database:
+
+```bash
+docker-compose -f docker/docker-compose.dev.yml up -d
+```
+
+This will start PostgreSQL 15 on port 5433 with:
+- Database: `coachme`
+- User: `postgres`
+- Password: `postgres`
+
+### Running Migrations
+
+After starting the database, run migrations:
+
+```bash
+npm run migrate:latest
+```
+
+To rollback the last migration:
+
+```bash
+npm run migrate:rollback
+```
+
+To create a new migration:
+
+```bash
+npm run migrate:make migration_name
+```
+
+### Manual Database Setup
+
+If you prefer to set up PostgreSQL manually:
+
+1. Create a database named `coachme`
+2. Update `.env` file with your database credentials
+3. Run migrations: `npm run migrate:latest`
+
 ## 🔧 Configuration
 
 Environment variables (optional, defaults provided):
 
+### Server
 - `PORT` - Server port (default: 3000)
+
+### JWT
 - `JWT_SECRET` - Secret key for JWT tokens (default: 'my-secret-key')
 - `JWT_ACCESS_EXPIRES_IN` - Access token expiration (default: '1h')
 - `JWT_REFRESH_EXPIRES_IN` - Refresh token expiration (default: '7d')
+
+### Database
+- `DB_HOST` - Database host (default: 'localhost')
+- `DB_PORT` - Database port (default: 5433)
+- `DB_USER` - Database user (default: 'postgres')
+- `DB_PASSWORD` - Database password (default: 'postgres')
+- `DB_NAME` - Database name (default: 'coachme')
+- `DB_SSL` - Enable SSL connection (default: 'false')
 
 ## 📚 API Documentation
 
@@ -215,6 +297,8 @@ Then:
 
 - **NestJS** - Progressive Node.js framework
 - **TypeScript** - Typed JavaScript
+- **PostgreSQL 15** - Relational database
+- **Knex.js** - SQL query builder and migrations
 - **jsonwebtoken** - JWT token handling
 - **bcrypt** - Password hashing
 - **class-validator** & **class-transformer** - DTO validation
@@ -223,10 +307,21 @@ Then:
 
 ## 🎯 Future Plans
 
-- Database integration (PostgreSQL)
-- Training session planning module
+- ✅ Database integration (PostgreSQL) - **COMPLETED**
+
+- Training session planning module 
+
 - Statistics and analytics
 - Strava integration
+
+- Asysten Trenera ( na podstawie danych generuje plan na przyszłość ( na podstawie własnych obliczeń ) )
+( enumy definiujące rodziaj ćwiczenia z katalogu )
+
+- Generowanie pliku pdf z raportem ( draft ), trener dokonuje review -> udostępnia końcowy raport 
+
+- AI Generator ? ( cel2 )
+
+
 
 ## 📄 License
 

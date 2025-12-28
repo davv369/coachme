@@ -13,4 +13,3 @@ export interface CreateUserRequest {
 export interface UserWriterOutPort {
   createUser(request: CreateUserRequest): Promise<User>;
 }
-

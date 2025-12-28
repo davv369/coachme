@@ -44,4 +44,3 @@ export class UserService implements UserInPort {
     return admin !== null;
   }
 }
-

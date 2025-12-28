@@ -28,4 +28,3 @@ export interface UserRepositoryOutPort {
   findById(request: FindByIdRequest): Promise<User | null>;
   findByRole(request: FindByRoleRequest): Promise<User | null>;
 }
-

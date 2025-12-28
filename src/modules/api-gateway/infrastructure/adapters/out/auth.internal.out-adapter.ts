@@ -4,10 +4,22 @@ import {
   AUTH_IN_PORT,
   AuthInPort,
 } from '@modules/auth/application/ports/in/auth.in-port';
-import { LoginRequestDto, LoginResponseDto } from '@common/dto/api-gateway/auth/login.dto';
-import { RegisterRequestDto, RegisterResponseDto } from '@common/dto/api-gateway/auth/register.dto';
-import { RefreshTokenRequestDto, RefreshTokenResponseDto } from '@common/dto/api-gateway/auth/refresh-token.dto';
-import { BootstrapAdminRequestDto, BootstrapAdminResponseDto } from '@common/dto/api-gateway/auth/bootstrap.dto';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+} from '@common/dto/api-gateway/auth/login.dto';
+import {
+  RegisterRequestDto,
+  RegisterResponseDto,
+} from '@common/dto/api-gateway/auth/register.dto';
+import {
+  RefreshTokenRequestDto,
+  RefreshTokenResponseDto,
+} from '@common/dto/api-gateway/auth/refresh-token.dto';
+import {
+  BootstrapAdminRequestDto,
+  BootstrapAdminResponseDto,
+} from '@common/dto/api-gateway/auth/bootstrap.dto';
 
 @Injectable()
 export class AuthInternalOutAdapter implements AuthOutPort {
@@ -24,12 +36,15 @@ export class AuthInternalOutAdapter implements AuthOutPort {
     return this.authInPort.register(request);
   }
 
-  async refreshToken(request: RefreshTokenRequestDto): Promise<RefreshTokenResponseDto> {
+  async refreshToken(
+    request: RefreshTokenRequestDto,
+  ): Promise<RefreshTokenResponseDto> {
     return this.authInPort.refreshToken(request);
   }
 
-  async bootstrapAdmin(request: BootstrapAdminRequestDto): Promise<BootstrapAdminResponseDto> {
+  async bootstrapAdmin(
+    request: BootstrapAdminRequestDto,
+  ): Promise<BootstrapAdminResponseDto> {
     return this.authInPort.bootstrapAdmin(request);
   }
 }
-
