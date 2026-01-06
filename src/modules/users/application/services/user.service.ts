@@ -3,8 +3,8 @@ import { User } from '../../domain/user.entity';
 import {
   CreateUserCommand,
   FindUserByEmailQuery,
+  FindUserByIdQuery,
   HasAdminQuery,
-  USER_IN_PORT,
   UserInPort,
 } from '../ports/in/user.in-port';
 import {
@@ -33,6 +33,10 @@ export class UserService implements UserInPort {
 
   async findUserByEmail(query: FindUserByEmailQuery): Promise<User | null> {
     return this.userRepository.findByEmail({ email: query.email });
+  }
+
+  async findUserById(query: FindUserByIdQuery): Promise<User | null> {
+    return this.userRepository.findById({ id: query.id });
   }
 
   async verifyPassword(user: User, password: string): Promise<boolean> {

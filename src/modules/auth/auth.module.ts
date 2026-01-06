@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from './application/services/jwt.service';
 import { AuthGuard } from './infrastructure/guards/auth.guard';
@@ -13,7 +13,7 @@ import { UserWriterAdapter } from './infrastructure/adapters/out/user-writer.ada
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [ConfigModule, UsersModule],
+  imports: [ConfigModule, forwardRef(() => UsersModule)],
   providers: [
     JwtService,
     AuthGuard,

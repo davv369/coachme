@@ -14,6 +14,10 @@ export interface FindUserByEmailQuery {
   email: string;
 }
 
+export interface FindUserByIdQuery {
+  id: string;
+}
+
 export interface HasAdminQuery {
   role: UserRole;
 }
@@ -21,6 +25,7 @@ export interface HasAdminQuery {
 export interface UserInPort {
   createUser(command: CreateUserCommand): Promise<User>;
   findUserByEmail(query: FindUserByEmailQuery): Promise<User | null>;
+  findUserById(query: FindUserByIdQuery): Promise<User | null>;
   verifyPassword(user: User, password: string): Promise<boolean>;
   hasAdmin(query: HasAdminQuery): Promise<boolean>;
 }

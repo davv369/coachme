@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ApiGatewayAuthInPort } from '../ports/in/auth.in-port';
-import { AUTH_OUT_PORT, AuthOutPort } from '../ports/out/auth.out-port';
+import {
+  API_GATEWAY_AUTH_OUT_PORT,
+  ApiGatewayAuthOutPort,
+} from '../ports/out/auth.out-port';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -21,8 +24,8 @@ import {
 @Injectable()
 export class ApiGatewayAuthService implements ApiGatewayAuthInPort {
   constructor(
-    @Inject(AUTH_OUT_PORT)
-    private readonly authOutPort: AuthOutPort,
+    @Inject(API_GATEWAY_AUTH_OUT_PORT)
+    private readonly authOutPort: ApiGatewayAuthOutPort,
   ) {}
 
   async login(command: LoginRequestDto): Promise<LoginResponseDto> {

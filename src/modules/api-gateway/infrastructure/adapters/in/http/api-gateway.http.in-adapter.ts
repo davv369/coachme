@@ -1,11 +1,7 @@
 import { Body, Controller, Get, Post, Inject } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Logger } from '@common/logger/logger';
-import {
-  Authenticated,
-  CurrentUser,
-} from '@modules/auth/application/decorators';
-import { JwtPayload } from '@modules/auth/domain/jwt-payload';
+import { Authenticated } from '@modules/auth/application/decorators';
 import { UserRole } from '@modules/auth/domain/user-role';
 import {
   API_GATEWAY_AUTH_IN_PORT,
@@ -27,7 +23,6 @@ import {
   BootstrapAdminRequestDto,
   BootstrapAdminResponseDto,
 } from '@common/dto/api-gateway/auth/bootstrap.dto';
-import { MeResponseDto } from '@common/dto/api-gateway/auth/me.dto';
 
 @ApiTags('API Gateway')
 @Controller()
@@ -38,14 +33,6 @@ export class ApiGatewayHttpInAdapter {
     @Inject(API_GATEWAY_AUTH_IN_PORT)
     private readonly authInPort: ApiGatewayAuthInPort,
   ) {}
-
-  @Get()
-  getRoot() {
-    return {
-      message: 'Hello from CoachMe!',
-      status: 'ok',
-    };
-  }
 
   @Get('health')
   getHealth() {
@@ -87,17 +74,6 @@ export class ApiGatewayHttpInAdapter {
     return this.authInPort.refreshToken({
       refreshToken: body.refreshToken,
     });
-  }
-
-  @Get('me')
-  @Authenticated()
-  async getMe(@CurrentUser() user: JwtPayload): Promise<MeResponseDto> {
-    this.logger.log(`User ${user.email} accessed /me endpoint`);
-    return {
-      userId: user.sub,
-      email: user.email,
-      role: user.role,
-    };
   }
 
   @Post('auth/bootstrap')

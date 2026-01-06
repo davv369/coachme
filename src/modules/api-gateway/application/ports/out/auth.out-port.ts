@@ -15,9 +15,9 @@ import {
   BootstrapAdminResponseDto,
 } from '@common/dto/api-gateway/auth/bootstrap.dto';
 
-export const AUTH_OUT_PORT = Symbol('AUTH_OUT_PORT');
+export const API_GATEWAY_AUTH_OUT_PORT = Symbol('API_GATEWAY_AUTH_OUT_PORT');
 
-export interface AuthOutPort {
+export interface ApiGatewayAuthOutPort {
   login(request: LoginRequestDto): Promise<LoginResponseDto>;
   register(request: RegisterRequestDto): Promise<RegisterResponseDto>;
   refreshToken(

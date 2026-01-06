@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { AuthOutPort } from '../../../application/ports/out/auth.out-port';
+import { ApiGatewayAuthOutPort } from '../../../application/ports/out/auth.out-port';
 import {
   AUTH_IN_PORT,
   AuthInPort,
@@ -22,7 +22,7 @@ import {
 } from '@common/dto/api-gateway/auth/bootstrap.dto';
 
 @Injectable()
-export class AuthInternalOutAdapter implements AuthOutPort {
+export class AuthInternalOutAdapter implements ApiGatewayAuthOutPort {
   constructor(
     @Inject(AUTH_IN_PORT)
     private readonly authInPort: AuthInPort,
