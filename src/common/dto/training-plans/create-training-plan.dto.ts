@@ -4,11 +4,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsDateString,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateTrainingPlanDto {
   @ApiProperty({ description: 'Athlete ID' })
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   athleteId: string;
 

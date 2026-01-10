@@ -5,6 +5,7 @@ import {
   Get,
   Inject,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -75,7 +76,7 @@ export class TrainingPlanHttpInAdapter {
   @ApiOperation({ summary: 'Get training plan by ID' })
   @ApiResponse({ status: 200, type: TrainingPlanResponseDto })
   async getTrainingPlanById(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() jwtPayload: JwtPayload,
   ): Promise<TrainingPlanResponseDto> {
     const plan = await this.trainingPlanOutPort.findTrainingPlanById({ id });
@@ -138,7 +139,7 @@ export class TrainingPlanHttpInAdapter {
   @ApiOperation({ summary: 'Update training plan' })
   @ApiResponse({ status: 200, type: TrainingPlanResponseDto })
   async updateTrainingPlan(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body()
     dto: Partial<CreateTrainingPlanDto & { status: TrainingPlanStatus }>,
     @CurrentUser() jwtPayload: JwtPayload,
@@ -179,7 +180,7 @@ export class TrainingPlanHttpInAdapter {
   @ApiOperation({ summary: 'Add workout to plan' })
   @ApiResponse({ status: 201, type: WorkoutResponseDto })
   async addWorkoutToPlan(
-    @Param('id') trainingPlanId: string,
+    @Param('id', ParseUUIDPipe) trainingPlanId: string,
     @Body() dto: AddWorkoutDto,
     @CurrentUser() jwtPayload: JwtPayload,
   ): Promise<WorkoutResponseDto> {
@@ -221,7 +222,7 @@ export class TrainingPlanHttpInAdapter {
   @ApiOperation({ summary: 'Get workouts from plan' })
   @ApiResponse({ status: 200, type: [WorkoutResponseDto] })
   async getWorkoutsByPlan(
-    @Param('id') trainingPlanId: string,
+    @Param('id', ParseUUIDPipe) trainingPlanId: string,
     @CurrentUser() jwtPayload: JwtPayload,
   ): Promise<WorkoutResponseDto[]> {
     const plan = await this.trainingPlanOutPort.findTrainingPlanById({
@@ -258,8 +259,8 @@ export class TrainingPlanHttpInAdapter {
   @ApiOperation({ summary: 'Remove workout from plan' })
   @ApiResponse({ status: 204 })
   async removeWorkoutFromPlan(
-    @Param('id') trainingPlanId: string,
-    @Param('workoutId') workoutId: string,
+    @Param('id', ParseUUIDPipe) trainingPlanId: string,
+    @Param('workoutId', ParseUUIDPipe) workoutId: string,
     @CurrentUser() jwtPayload: JwtPayload,
   ): Promise<void> {
     const plan = await this.trainingPlanOutPort.findTrainingPlanById({

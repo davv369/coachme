@@ -5,6 +5,7 @@ import {
   Get,
   Inject,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -76,7 +77,9 @@ export class ExerciseHttpInAdapter {
   @Authenticated()
   @ApiOperation({ summary: 'Get exercise by ID' })
   @ApiResponse({ status: 200, type: ExerciseResponseDto })
-  async getExerciseById(@Param('id') id: string): Promise<ExerciseResponseDto> {
+  async getExerciseById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ExerciseResponseDto> {
     const exercise = await this.exerciseOutPort.findExerciseById({ id });
 
     if (!exercise) {
@@ -123,7 +126,7 @@ export class ExerciseHttpInAdapter {
   @ApiOperation({ summary: 'Delete exercise' })
   @ApiResponse({ status: 204 })
   async deleteExercise(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() jwtPayload: JwtPayload,
   ): Promise<void> {
     this.logger.log(`User ${jwtPayload.email} deleting exercise: ${id}`);
