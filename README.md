@@ -51,8 +51,10 @@ npm start
 src/
 ├── common/                    # Shared modules
 │   ├── dto/                  # Data Transfer Objects
-│   │   └── api-gateway/      # API Gateway DTOs
-│   │       └── auth/         # Authentication DTOs
+│   │   ├── api-gateway/      # API Gateway DTOs
+│   │   │   └── auth/         # Authentication DTOs
+│   │   ├── exercises/        # Exercise DTOs
+│   │   └── training-plans/   # Training Plan DTOs
 │   ├── logger/               # Logger service
 │   └── error-handling/       # Exception filter and domain exceptions
 ├── modules/                   # Business modules
@@ -63,10 +65,18 @@ src/
 │   │   ├── application/      # Auth services, ports, decorators
 │   │   ├── domain/           # JWT payload, user roles
 │   │   └── infrastructure/   # JWT adapters, guards
-│   └── users/                # User management module
-│       ├── application/      # User services & ports
-│       ├── domain/           # User entity
-│       └── infrastructure/   # In-memory repository (for development)
+│   ├── users/                # User management module
+│   │   ├── application/      # User services & ports
+│   │   ├── domain/           # User entity
+│   │   └── infrastructure/   # Database repository
+│   ├── exercises/            # Exercises module
+│   │   ├── application/      # Exercise services & ports
+│   │   ├── domain/           # Exercise entity, WorkoutType enum
+│   │   └── infrastructure/   # Database repository & adapters
+│   └── training-plans/       # Training Plans module
+│       ├── application/      # Training plan services & ports
+│       ├── domain/           # TrainingPlan & Workout entities
+│       └── infrastructure/   # Database repositories & adapters
 ├── app.module.ts             # Root module
 └── main.ts                   # Application entry point
 ```
@@ -100,6 +110,17 @@ Single entry point for all HTTP requests. Routes requests to appropriate modules
 - `POST /api/auth/refresh` - Refresh access token
 - `POST /api/auth/bootstrap` - Create first admin user
 - `GET /api/me` - Get current user info (Authenticated)
+- `POST /api/exercises` - Create exercise (Trainer only)
+- `GET /api/exercises` - List exercises
+- `GET /api/exercises/:id` - Get exercise by ID
+- `POST /api/training-plans` - Create training plan (Trainer only)
+- `GET /api/training-plans` - List training plans
+- `GET /api/training-plans/:id` - Get training plan by ID
+- `PATCH /api/training-plans/:id` - Update training plan (Trainer only)
+- `POST /api/training-plans/:id/workouts` - Add workout to plan (Trainer only)
+- `GET /api/training-plans/:id/workouts` - Get workouts from plan
+- `PATCH /api/training-plans/:id/workouts/:workoutId` - Update workout (Trainer only)
+- `DELETE /api/training-plans/:id/workouts/:workoutId` - Remove workout (Trainer only)
 
 ### Auth Module
 
@@ -114,7 +135,23 @@ Handles authentication and authorization:
 Manages user data:
 - User creation and retrieval
 - Password hashing (bcrypt)
-- In-memory storage (for development)
+- PostgreSQL database storage
+
+### Exercises Module
+
+Manages exercise templates:
+- Exercise creation with parameter templates (schema + defaults)
+- Support for multiple workout types (RUNNING, CYCLING, SWIMMING, STRENGTH, HIKING, RECOVERY)
+- Exercises can be trainer-specific or global/system templates
+- Editable parameters per exercise (distance, pace, repetitions, etc.)
+
+### Training Plans Module
+
+Manages training plans and workouts:
+- Training plan creation with status management (DRAFT, ACTIVE, COMPLETED, PAUSED)
+- Workout management - adding exercise instances to plans
+- Trainers can extend plans over time by adding new workouts
+- Workouts are always part of a training plan (not standalone)
 
 ## 🔐 Authentication
 
@@ -308,18 +345,14 @@ Then:
 ## 🎯 Future Plans
 
 - ✅ Database integration (PostgreSQL) - **COMPLETED**
-
-- Training session planning module 
+- ✅ Exercises module - **COMPLETED**
+- ✅ Training Plans module - **COMPLETED**
 
 - Statistics and analytics
 - Strava integration
-
-- Asysten Trenera ( na podstawie danych generuje plan na przyszłość ( na podstawie własnych obliczeń ) )
-( enumy definiujące rodziaj ćwiczenia z katalogu )
-
-- Generowanie pliku pdf z raportem ( draft ), trener dokonuje review -> udostępnia końcowy raport 
-
-- AI Generator ? ( cel2 )
+- Training session execution tracking
+- AI Trainer Assistant (generates training plans based on data analysis)
+- PDF report generation (draft review workflow)
 
 
 
