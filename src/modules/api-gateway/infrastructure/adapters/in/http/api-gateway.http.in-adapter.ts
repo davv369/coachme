@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Logger } from '@common/logger/logger';
 import { Authenticated } from '@modules/auth/application/decorators';

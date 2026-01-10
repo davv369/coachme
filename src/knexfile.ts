@@ -12,7 +12,10 @@ const config: { [key: string]: Knex.Config } = {
       database: process.env.DB_NAME || 'coachme',
     },
     migrations: {
-      directory: path.join(__dirname, 'modules/users/infrastructure/adapters/out/persistence/database/migrations'),
+      directory: path.join(
+        __dirname,
+        'modules/users/infrastructure/adapters/out/persistence/database/migrations',
+      ),
       tableName: 'knex_migrations_users',
     },
   },
@@ -25,14 +28,17 @@ const config: { [key: string]: Knex.Config } = {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+      ssl:
+        process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     },
     migrations: {
-      directory: path.join(__dirname, 'modules/users/infrastructure/adapters/out/persistence/database/migrations'),
+      directory: path.join(
+        __dirname,
+        'modules/users/infrastructure/adapters/out/persistence/database/migrations',
+      ),
       tableName: 'knex_migrations_users',
     },
   },
 };
 
 export default config;
-

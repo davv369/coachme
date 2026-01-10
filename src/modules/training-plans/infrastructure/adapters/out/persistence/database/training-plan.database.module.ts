@@ -4,18 +4,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Knex, knex } from 'knex';
 import * as path from 'path';
 
-import { USER_REPOSITORY_OUT_PORT } from '../../../../../application/ports/out/user-repository.out-port';
-import { UserDatabaseRepository } from './user.database.repository';
+import {
+  TRAINING_PLAN_REPOSITORY_OUT_PORT,
+  WORKOUT_REPOSITORY_OUT_PORT,
+} from '../../../../../application/ports/out/training-plan-repository.out-port';
+import { TrainingPlanDatabaseRepository } from './training-plan.database.repository';
+import { WorkoutDatabaseRepository } from './workout.database.repository';
 
-export const USER_KNEX_CONNECTION = 'UserConnection';
+export const TRAINING_PLAN_KNEX_CONNECTION = 'TrainingPlanConnection';
 
 @Module({
   imports: [ConfigModule],
   providers: [
     {
-      provide: USER_KNEX_CONNECTION,
+      provide: TRAINING_PLAN_KNEX_CONNECTION,
       useFactory: async (configService: ConfigService): Promise<Knex> => {
-        const logger = new Logger('UserDatabaseModule');
+        const logger = new Logger('TrainingPlanDatabaseModule');
         const host = configService.get<string>('DB_HOST') || 'localhost';
         const port = configService.get<number>('DB_PORT') || 5433;
         const user = configService.get<string>('DB_USER') || 'postgres';
@@ -24,7 +28,7 @@ export const USER_KNEX_CONNECTION = 'UserConnection';
         const ssl = configService.get<string>('DB_SSL') === 'true';
 
         logger.log(
-          `[UserDatabaseModule] Connecting to database: ${host}:${port}/${database} as user: ${user}`,
+          `[TrainingPlanDatabaseModule] Connecting to database: ${host}:${port}/${database} as user: ${user}`,
         );
 
         try {
@@ -40,18 +44,20 @@ export const USER_KNEX_CONNECTION = 'UserConnection';
             },
             migrations: {
               directory: path.join(__dirname, 'migrations'),
-              tableName: 'knex_migrations_users',
+              tableName: 'knex_migrations_training_plans',
             },
           });
 
-          logger.log('[UserDatabaseModule] Running migrations...');
+          logger.log('[TrainingPlanDatabaseModule] Running migrations...');
           await db.migrate.latest();
-          logger.log('[UserDatabaseModule] Migrations completed successfully');
+          logger.log(
+            '[TrainingPlanDatabaseModule] Migrations completed successfully',
+          );
 
           return db;
         } catch (error) {
           logger.error(
-            '[UserDatabaseModule] Failed to connect to database or run migrations',
+            '[TrainingPlanDatabaseModule] Failed to connect to database or run migrations',
             error,
           );
           throw error;
@@ -60,11 +66,16 @@ export const USER_KNEX_CONNECTION = 'UserConnection';
       inject: [ConfigService],
     },
     {
-      provide: USER_REPOSITORY_OUT_PORT,
-      useFactory: (knex: Knex) => new UserDatabaseRepository(knex),
-      inject: [USER_KNEX_CONNECTION],
+      provide: TRAINING_PLAN_REPOSITORY_OUT_PORT,
+      useFactory: (knex: Knex) => new TrainingPlanDatabaseRepository(knex),
+      inject: [TRAINING_PLAN_KNEX_CONNECTION],
+    },
+    {
+      provide: WORKOUT_REPOSITORY_OUT_PORT,
+      useFactory: (knex: Knex) => new WorkoutDatabaseRepository(knex),
+      inject: [TRAINING_PLAN_KNEX_CONNECTION],
     },
   ],
-  exports: [USER_REPOSITORY_OUT_PORT],
+  exports: [TRAINING_PLAN_REPOSITORY_OUT_PORT, WORKOUT_REPOSITORY_OUT_PORT],
 })
-export class UserDatabaseModule {}
+export class TrainingPlanDatabaseModule {}

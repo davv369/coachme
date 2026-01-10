@@ -1,0 +1,8 @@
+export enum WorkoutType {
+  RUNNING = 'RUNNING',
+  CYCLING = 'CYCLING',
+  SWIMMING = 'SWIMMING',
+  STRENGTH = 'STRENGTH',
+  HIKING = 'HIKING',
+  RECOVERY = 'RECOVERY',
+}
