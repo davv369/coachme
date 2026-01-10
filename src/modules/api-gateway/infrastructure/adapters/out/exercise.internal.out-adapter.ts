@@ -4,6 +4,7 @@ import { EXERCISE_IN_PORT } from '@modules/exercises/application/ports/in/exerci
 import { ExerciseInPort } from '@modules/exercises/application/ports/in/exercise.in-port';
 import {
   CreateExerciseRequest,
+  DeleteExerciseRequest,
   ExerciseOutPort,
   FindExerciseByIdRequest,
   FindExercisesByTrainerRequest,
@@ -47,6 +48,13 @@ export class ExerciseInternalOutAdapter implements ExerciseOutPort {
   ): Promise<Exercise[]> {
     return this.exerciseInPort.findExercisesByWorkoutType({
       workoutType: request.workoutType,
+      trainerId: request.trainerId,
+    });
+  }
+
+  async deleteExercise(request: DeleteExerciseRequest): Promise<void> {
+    return this.exerciseInPort.deleteExercise({
+      id: request.id,
       trainerId: request.trainerId,
     });
   }

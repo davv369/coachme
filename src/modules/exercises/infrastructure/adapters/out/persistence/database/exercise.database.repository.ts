@@ -3,6 +3,7 @@ import { Exercise } from '../../../../../domain/exercise.entity';
 import { WorkoutType } from '../../../../../domain/workout-type.enum';
 import {
   CreateExerciseRequest,
+  DeleteExerciseRequest,
   ExerciseRepositoryOutPort,
   FindByIdRequest,
   FindByTrainerRequest,
@@ -104,6 +105,22 @@ export class ExerciseDatabaseRepository implements ExerciseRepositoryOutPort {
     const exerciseRows = await query.orderBy('created_at', 'desc');
 
     return exerciseRows.map((row) => this.mapToExercise(row));
+  }
+
+  async delete(request: DeleteExerciseRequest): Promise<void> {
+    const query = this.knex<ExerciseRow>(this.tableName).where({
+      id: request.id,
+    });
+
+    // For global exercises (trainerId === null), match where trainer_id is null
+    // For trainer's exercises, match both id and trainer_id
+    if (request.trainerId === null) {
+      query.whereNull('trainer_id');
+    } else {
+      query.where({ trainer_id: request.trainerId });
+    }
+
+    await query.delete();
   }
 
   private mapToExercise(row: ExerciseRow): Exercise {

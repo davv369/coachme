@@ -38,6 +38,11 @@ export interface FindExercisesByWorkoutTypeRequest {
   trainerId?: string | null;
 }
 
+export interface DeleteExerciseRequest {
+  id: string;
+  trainerId: string | null; // null for global exercises
+}
+
 export interface ExerciseOutPort {
   createExercise(request: CreateExerciseRequest): Promise<Exercise>;
   findExerciseById(request: FindExerciseByIdRequest): Promise<Exercise | null>;
@@ -47,4 +52,5 @@ export interface ExerciseOutPort {
   findExercisesByWorkoutType(
     request: FindExercisesByWorkoutTypeRequest,
   ): Promise<Exercise[]>;
+  deleteExercise(request: DeleteExerciseRequest): Promise<void>;
 }

@@ -38,6 +38,11 @@ export interface FindExercisesByWorkoutTypeQuery {
   trainerId?: string | null; // opcjonalne filtrowanie po trenerze
 }
 
+export interface DeleteExerciseCommand {
+  id: string;
+  trainerId: string | null; // null for global exercises
+}
+
 export interface ExerciseInPort {
   createExercise(command: CreateExerciseCommand): Promise<Exercise>;
   findExerciseById(query: FindExerciseByIdQuery): Promise<Exercise | null>;
@@ -47,4 +52,5 @@ export interface ExerciseInPort {
   findExercisesByWorkoutType(
     query: FindExercisesByWorkoutTypeQuery,
   ): Promise<Exercise[]>;
+  deleteExercise(command: DeleteExerciseCommand): Promise<void>;
 }

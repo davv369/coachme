@@ -41,7 +41,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Post()
   @Authenticated()
-  @ApiOperation({ summary: 'Utwórz nowy plan treningowy' })
+  @ApiOperation({ summary: 'Create new training plan' })
   @ApiResponse({ status: 201, type: TrainingPlanResponseDto })
   async createTrainingPlan(
     @Body() dto: CreateTrainingPlanDto,
@@ -72,7 +72,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Get(':id')
   @Authenticated()
-  @ApiOperation({ summary: 'Pobierz plan treningowy po ID' })
+  @ApiOperation({ summary: 'Get training plan by ID' })
   @ApiResponse({ status: 200, type: TrainingPlanResponseDto })
   async getTrainingPlanById(
     @Param('id') id: string,
@@ -103,7 +103,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Get()
   @Authenticated()
-  @ApiOperation({ summary: 'Pobierz listę planów treningowych' })
+  @ApiOperation({ summary: 'Get list of training plans' })
   @ApiResponse({ status: 200, type: [TrainingPlanResponseDto] })
   async getTrainingPlans(
     @Query('athleteId') athleteId?: string,
@@ -135,7 +135,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Patch(':id')
   @Authenticated()
-  @ApiOperation({ summary: 'Zaktualizuj plan treningowy' })
+  @ApiOperation({ summary: 'Update training plan' })
   @ApiResponse({ status: 200, type: TrainingPlanResponseDto })
   async updateTrainingPlan(
     @Param('id') id: string,
@@ -176,7 +176,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Post(':id/workouts')
   @Authenticated()
-  @ApiOperation({ summary: 'Dodaj workout do planu' })
+  @ApiOperation({ summary: 'Add workout to plan' })
   @ApiResponse({ status: 201, type: WorkoutResponseDto })
   async addWorkoutToPlan(
     @Param('id') trainingPlanId: string,
@@ -218,7 +218,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Get(':id/workouts')
   @Authenticated()
-  @ApiOperation({ summary: 'Pobierz workouty z planu' })
+  @ApiOperation({ summary: 'Get workouts from plan' })
   @ApiResponse({ status: 200, type: [WorkoutResponseDto] })
   async getWorkoutsByPlan(
     @Param('id') trainingPlanId: string,
@@ -255,7 +255,7 @@ export class TrainingPlanHttpInAdapter {
 
   @Delete(':id/workouts/:workoutId')
   @Authenticated()
-  @ApiOperation({ summary: 'Usuń workout z planu' })
+  @ApiOperation({ summary: 'Remove workout from plan' })
   @ApiResponse({ status: 204 })
   async removeWorkoutFromPlan(
     @Param('id') trainingPlanId: string,

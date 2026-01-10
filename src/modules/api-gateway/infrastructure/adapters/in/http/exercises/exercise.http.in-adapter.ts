@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -37,7 +38,7 @@ export class ExerciseHttpInAdapter {
 
   @Post()
   @Authenticated()
-  @ApiOperation({ summary: 'Utwórz nowe ćwiczenie' })
+  @ApiOperation({ summary: 'Create new exercise' })
   @ApiResponse({ status: 201, type: ExerciseResponseDto })
   async createExercise(
     @Body() dto: CreateExerciseDto,
@@ -45,15 +46,22 @@ export class ExerciseHttpInAdapter {
   ): Promise<ExerciseResponseDto> {
     this.logger.log(`User ${jwtPayload.email} creating exercise: ${dto.name}`);
 
-    if (jwtPayload.role !== UserRole.TRAINER) {
+    if (
+      jwtPayload.role !== UserRole.TRAINER &&
+      jwtPayload.role !== UserRole.ADMIN
+    ) {
       throw new DomainException(
         InternalErrorCode.FORBIDDEN,
-        'Only trainers can create exercises',
+        'Only trainers and admins can create exercises',
       );
     }
 
+    // Admin can create global exercises (trainerId = null), trainers create their own
+    const trainerId =
+      jwtPayload.role === UserRole.ADMIN ? null : jwtPayload.sub;
+
     const exercise = await this.exerciseOutPort.createExercise({
-      trainerId: jwtPayload.sub,
+      trainerId,
       name: dto.name,
       description: dto.description,
       workoutType: dto.workoutType,
@@ -66,7 +74,7 @@ export class ExerciseHttpInAdapter {
 
   @Get(':id')
   @Authenticated()
-  @ApiOperation({ summary: 'Pobierz ćwiczenie po ID' })
+  @ApiOperation({ summary: 'Get exercise by ID' })
   @ApiResponse({ status: 200, type: ExerciseResponseDto })
   async getExerciseById(@Param('id') id: string): Promise<ExerciseResponseDto> {
     const exercise = await this.exerciseOutPort.findExerciseById({ id });
@@ -83,7 +91,7 @@ export class ExerciseHttpInAdapter {
 
   @Get()
   @Authenticated()
-  @ApiOperation({ summary: 'Pobierz listę ćwiczeń' })
+  @ApiOperation({ summary: 'Get list of exercises' })
   @ApiResponse({ status: 200, type: [ExerciseResponseDto] })
   async getExercises(
     @Query('trainerId') trainerId?: string | null,
@@ -108,6 +116,57 @@ export class ExerciseHttpInAdapter {
     }
 
     return exercises.map((exercise) => this.mapExerciseToDto(exercise));
+  }
+
+  @Delete(':id')
+  @Authenticated()
+  @ApiOperation({ summary: 'Delete exercise' })
+  @ApiResponse({ status: 204 })
+  async deleteExercise(
+    @Param('id') id: string,
+    @CurrentUser() jwtPayload: JwtPayload,
+  ): Promise<void> {
+    this.logger.log(`User ${jwtPayload.email} deleting exercise: ${id}`);
+
+    if (
+      jwtPayload.role !== UserRole.TRAINER &&
+      jwtPayload.role !== UserRole.ADMIN
+    ) {
+      throw new DomainException(
+        InternalErrorCode.FORBIDDEN,
+        'Only trainers and admins can delete exercises',
+      );
+    }
+
+    const exercise = await this.exerciseOutPort.findExerciseById({ id });
+
+    if (!exercise) {
+      throw new DomainException(
+        InternalErrorCode.NOT_FOUND,
+        'Exercise not found',
+      );
+    }
+
+    // Only trainer who created the exercise can delete it
+    // For global exercises (trainerId === null), only admin can delete
+    if (
+      jwtPayload.role !== UserRole.ADMIN &&
+      (exercise.trainerId === null || exercise.trainerId !== jwtPayload.sub)
+    ) {
+      throw new DomainException(
+        InternalErrorCode.FORBIDDEN,
+        'You can only delete your own exercises',
+      );
+    }
+
+    // For global exercises, pass null as trainerId; for trainer's exercises, pass their ID
+    const trainerIdForDelete =
+      exercise.trainerId === null ? null : jwtPayload.sub;
+
+    await this.exerciseOutPort.deleteExercise({
+      id,
+      trainerId: trainerIdForDelete,
+    });
   }
 
   private mapExerciseToDto(exercise: any): ExerciseResponseDto {

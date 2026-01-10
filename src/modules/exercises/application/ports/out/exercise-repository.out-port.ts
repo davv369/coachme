@@ -40,9 +40,15 @@ export interface FindByWorkoutTypeRequest {
   trainerId?: string | null;
 }
 
+export interface DeleteExerciseRequest {
+  id: string;
+  trainerId: string | null; // null for global exercises
+}
+
 export interface ExerciseRepositoryOutPort {
   create(request: CreateExerciseRequest): Promise<Exercise>;
   findById(request: FindByIdRequest): Promise<Exercise | null>;
   findByTrainer(request: FindByTrainerRequest): Promise<Exercise[]>;
   findByWorkoutType(request: FindByWorkoutTypeRequest): Promise<Exercise[]>;
+  delete(request: DeleteExerciseRequest): Promise<void>;
 }
