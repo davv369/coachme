@@ -36,6 +36,11 @@ export class TrainingSession {
      * Not linked to specific workout - athlete can perform any exercise regardless of plan
      */
     public readonly trainingPlanId: string | null,
+    /**
+     * Strava activity ID if this session was synced from Strava
+     * Used for deduplication and handling Strava webhook events (update/delete)
+     */
+    public readonly stravaActivityId: string | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}

@@ -23,6 +23,12 @@ export class TrainingSessionResponseDto {
   @ApiProperty({ nullable: true })
   trainingPlanId: string | null;
 
+  @ApiProperty({
+    nullable: true,
+    description: 'Strava activity ID if synced from Strava',
+  })
+  stravaActivityId: string | null;
+
   @ApiProperty()
   createdAt: Date;
 

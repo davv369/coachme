@@ -224,12 +224,19 @@ curl -X POST http://localhost:3000/api/auth/register \
 Create a `.env` file in the project root with the following variables (or use the defaults):
 
 ```env
+# Database
 DB_HOST=localhost
 DB_PORT=5433
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=coachme
 DB_SSL=false
+
+# Strava Integration (optional)
+STRAVA_CLIENT_ID=your_strava_client_id
+STRAVA_CLIENT_SECRET=your_strava_client_secret
+STRAVA_REDIRECT_URI=http://localhost:3000/api/strava/callback
+STRAVA_WEBHOOK_VERIFY_TOKEN=STRAVA
 ```
 
 ### Using Docker Compose (Recommended)
@@ -347,14 +354,54 @@ Then:
 - ✅ Database integration (PostgreSQL) - **COMPLETED**
 - ✅ Exercises module - **COMPLETED**
 - ✅ Training Plans module - **COMPLETED**
-
 - Statistics and analytics
-- Strava integration
-- Training session execution tracking
+- ✅ Strava integration - **COMPLETED**
+- ✅ Training session execution tracking - **COMPLETED**
 - AI Trainer Assistant (generates training plans based on data analysis)
 - PDF report generation (draft review workflow)
 
 
+
+## 🔗 Strava Integration
+
+For detailed Strava integration setup and testing instructions, see [STRAVA_SETUP.md](./STRAVA_SETUP.md).
+
+### Quick Start
+
+1. **Add Strava credentials to `.env`:**
+   ```env
+   STRAVA_CLIENT_ID=your_strava_client_id
+   STRAVA_CLIENT_SECRET=your_strava_client_secret
+   STRAVA_REDIRECT_URI=http://localhost:3000/api/strava/callback
+   STRAVA_WEBHOOK_VERIFY_TOKEN=STRAVA
+   ```
+
+2. **Run migrations:**
+   ```bash
+   npm run migrate:latest
+   ```
+
+3. **Connect Strava account:**
+   - Login as athlete
+   - Call: `GET /api/strava/authorize`
+   - Authorize in Strava
+   - You'll be redirected back and account will be connected
+
+4. **Sync activities:**
+   ```bash
+   POST /api/strava/sync
+   Authorization: Bearer <athlete_token>
+   ```
+
+### Available Endpoints
+
+- `GET /api/strava/authorize` - Start OAuth flow
+- `GET /api/strava/callback` - OAuth callback (handled automatically)
+- `POST /api/strava/sync` - Manually sync activities
+- `POST /api/strava/sync/:activityId` - Sync specific activity
+- `POST /api/strava/disconnect` - Disconnect Strava account
+- `GET /api/strava/webhook` - Webhook verification
+- `POST /api/strava/webhook` - Webhook handler (automatic sync)
 
 ## 📄 License
 

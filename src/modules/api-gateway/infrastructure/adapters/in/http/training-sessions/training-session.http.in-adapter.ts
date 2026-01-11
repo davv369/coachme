@@ -277,6 +277,7 @@ export class TrainingSessionHttpInAdapter {
       actualParameters: session.actualParameters,
       notes: session.notes,
       trainingPlanId: session.trainingPlanId,
+      stravaActivityId: session.stravaActivityId,
       createdAt: session.createdAt,
       updatedAt: session.updatedAt,
     };

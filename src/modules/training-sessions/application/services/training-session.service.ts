@@ -5,6 +5,7 @@ import {
   UpdateTrainingSessionCommand,
   FindTrainingSessionByIdQuery,
   FindTrainingSessionsByAthleteQuery,
+  FindTrainingSessionByStravaActivityIdQuery,
   DeleteTrainingSessionCommand,
   TrainingSessionInPort,
 } from '../ports/in/training-session.in-port';
@@ -32,6 +33,7 @@ export class TrainingSessionService implements TrainingSessionInPort {
       actualParameters: command.actualParameters,
       notes: command.notes ?? null,
       trainingPlanId: command.trainingPlanId ?? null,
+      stravaActivityId: command.stravaActivityId ?? null,
     });
   }
 
@@ -58,6 +60,7 @@ export class TrainingSessionService implements TrainingSessionInPort {
 
     return this.trainingSessionRepository.update({
       id: command.id,
+      workoutType: command.workoutType,
       actualDate: command.actualDate,
       actualParameters: command.actualParameters,
       notes: command.notes ?? null,
@@ -78,6 +81,15 @@ export class TrainingSessionService implements TrainingSessionInPort {
       startDate: query.startDate,
       endDate: query.endDate,
       trainingPlanId: query.trainingPlanId,
+    });
+  }
+
+  async findTrainingSessionByStravaActivityId(
+    query: FindTrainingSessionByStravaActivityIdQuery,
+  ): Promise<TrainingSession | null> {
+    return this.trainingSessionRepository.findByStravaActivityId({
+      athleteId: query.athleteId,
+      stravaActivityId: query.stravaActivityId,
     });
   }
 

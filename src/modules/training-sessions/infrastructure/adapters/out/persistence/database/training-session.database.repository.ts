@@ -5,6 +5,7 @@ import {
   UpdateTrainingSessionRequest,
   FindTrainingSessionByIdRequest,
   FindTrainingSessionsByAthleteRequest,
+  FindTrainingSessionByStravaActivityIdRequest,
   DeleteTrainingSessionRequest,
   TrainingSessionRepositoryOutPort,
 } from '../../../../../application/ports/out/training-session-repository.out-port';
@@ -20,6 +21,7 @@ interface TrainingSessionRow {
   actual_parameters: Record<string, any>;
   notes: string | null;
   training_plan_id: string | null;
+  strava_activity_id: string | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -45,6 +47,7 @@ export class TrainingSessionDatabaseRepository implements TrainingSessionReposit
         actual_parameters: request.actualParameters,
         notes: request.notes,
         training_plan_id: request.trainingPlanId,
+        strava_activity_id: request.stravaActivityId ?? null,
         created_at: now,
         updated_at: now,
       })
@@ -61,6 +64,9 @@ export class TrainingSessionDatabaseRepository implements TrainingSessionReposit
       updated_at: now,
     };
 
+    if (request.workoutType !== undefined) {
+      updateData.workout_type = request.workoutType;
+    }
     if (request.actualDate !== undefined) {
       updateData.actual_date = request.actualDate;
     }
@@ -123,6 +129,19 @@ export class TrainingSessionDatabaseRepository implements TrainingSessionReposit
     return sessionRows.map((row) => this.mapToTrainingSession(row));
   }
 
+  async findByStravaActivityId(
+    request: FindTrainingSessionByStravaActivityIdRequest,
+  ): Promise<TrainingSession | null> {
+    const sessionRow = await this.knex<TrainingSessionRow>(this.tableName)
+      .where({
+        athlete_id: request.athleteId,
+        strava_activity_id: request.stravaActivityId,
+      })
+      .first();
+
+    return sessionRow ? this.mapToTrainingSession(sessionRow) : null;
+  }
+
   async delete(request: DeleteTrainingSessionRequest): Promise<void> {
     await this.knex<TrainingSessionRow>(this.tableName)
       .where({ id: request.id })
@@ -138,6 +157,7 @@ export class TrainingSessionDatabaseRepository implements TrainingSessionReposit
       row.actual_parameters,
       row.notes,
       row.training_plan_id,
+      row.strava_activity_id,
       row.created_at,
       row.updated_at,
     );

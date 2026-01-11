@@ -5,11 +5,13 @@ import { ExerciseHttpInAdapter } from './infrastructure/adapters/in/http/exercis
 import { TrainingPlanHttpInAdapter } from './infrastructure/adapters/in/http/training-plans/training-plan.http.in-adapter';
 import { TrainingSessionHttpInAdapter } from './infrastructure/adapters/in/http/training-sessions/training-session.http.in-adapter';
 import { TrainerAthleteHttpInAdapter } from './infrastructure/adapters/in/http/trainer-athletes/trainer-athlete.http.in-adapter';
+import { StravaHttpInAdapter } from './infrastructure/adapters/in/http/strava/strava.http.in-adapter';
 import { AuthModule } from '@auth/auth.module';
 import { ExercisesModule } from '../exercises/exercises.module';
 import { TrainingPlansModule } from '../training-plans/training-plans.module';
 import { TrainingSessionsModule } from '../training-sessions/training-sessions.module';
 import { TrainerAthletesModule } from '../trainer-athletes/trainer-athletes.module';
+import { StravaModule } from '../strava/strava.module';
 import { ApiGatewayAuthService } from './application/services/auth.service';
 import { API_GATEWAY_AUTH_IN_PORT } from './application/ports/in/auth.in-port';
 import { API_GATEWAY_AUTH_OUT_PORT } from './application/ports/out/auth.out-port';
@@ -22,6 +24,8 @@ import { TRAINING_SESSION_OUT_PORT } from './application/ports/out/training-sess
 import { TrainingSessionInternalOutAdapter } from './infrastructure/adapters/out/training-session.internal.out-adapter';
 import { TRAINER_ATHLETE_OUT_PORT } from './application/ports/out/trainer-athlete.out-port';
 import { TrainerAthleteInternalOutAdapter } from './infrastructure/adapters/out/trainer-athlete.internal.out-adapter';
+import { STRAVA_OUT_PORT } from './application/ports/out/strava.out-port';
+import { StravaInternalOutAdapter } from './infrastructure/adapters/out/strava.internal.out-adapter';
 
 @Module({
   imports: [
@@ -31,6 +35,7 @@ import { TrainerAthleteInternalOutAdapter } from './infrastructure/adapters/out/
     TrainingPlansModule,
     TrainingSessionsModule,
     TrainerAthletesModule,
+    StravaModule,
   ],
   controllers: [
     ApiGatewayHttpInAdapter,
@@ -38,6 +43,7 @@ import { TrainerAthleteInternalOutAdapter } from './infrastructure/adapters/out/
     TrainingPlanHttpInAdapter,
     TrainingSessionHttpInAdapter,
     TrainerAthleteHttpInAdapter,
+    StravaHttpInAdapter,
   ],
   providers: [
     {
@@ -63,6 +69,10 @@ import { TrainerAthleteInternalOutAdapter } from './infrastructure/adapters/out/
     {
       provide: TRAINER_ATHLETE_OUT_PORT,
       useClass: TrainerAthleteInternalOutAdapter,
+    },
+    {
+      provide: STRAVA_OUT_PORT,
+      useClass: StravaInternalOutAdapter,
     },
   ],
 })

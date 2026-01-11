@@ -12,10 +12,12 @@ export interface CreateTrainingSessionRequest {
   actualParameters: Record<string, any>;
   notes: string | null;
   trainingPlanId: string | null;
+  stravaActivityId?: string | null;
 }
 
 export interface UpdateTrainingSessionRequest {
   id: string;
+  workoutType?: WorkoutType;
   actualDate?: Date;
   actualParameters?: Record<string, any>;
   notes?: string | null;
@@ -36,6 +38,11 @@ export interface DeleteTrainingSessionRequest {
   id: string;
 }
 
+export interface FindTrainingSessionByStravaActivityIdRequest {
+  athleteId: string;
+  stravaActivityId: string;
+}
+
 export interface TrainingSessionRepositoryOutPort {
   create(request: CreateTrainingSessionRequest): Promise<TrainingSession>;
   update(request: UpdateTrainingSessionRequest): Promise<TrainingSession>;
@@ -45,5 +52,8 @@ export interface TrainingSessionRepositoryOutPort {
   findByAthlete(
     request: FindTrainingSessionsByAthleteRequest,
   ): Promise<TrainingSession[]>;
+  findByStravaActivityId(
+    request: FindTrainingSessionByStravaActivityIdRequest,
+  ): Promise<TrainingSession | null>;
   delete(request: DeleteTrainingSessionRequest): Promise<void>;
 }
