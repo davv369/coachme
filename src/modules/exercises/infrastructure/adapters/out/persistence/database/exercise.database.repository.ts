@@ -55,7 +55,9 @@ export class ExerciseDatabaseRepository implements ExerciseRepositoryOutPort {
         name: request.name,
         description: request.description,
         workout_type: request.workoutType,
-        parameters_template: JSON.stringify(request.parametersTemplate),
+        parameters_template: JSON.stringify(
+          request.parametersTemplate.defaults,
+        ),
         is_template: request.isTemplate ?? true,
         created_at: now,
         updated_at: now,
@@ -124,15 +126,19 @@ export class ExerciseDatabaseRepository implements ExerciseRepositoryOutPort {
   }
 
   private mapToExercise(row: ExerciseRow): Exercise {
+    const raw =
+      typeof row.parameters_template === 'string'
+        ? JSON.parse(row.parameters_template)
+        : row.parameters_template;
+    const defaults =
+      raw && typeof raw === 'object' && 'defaults' in raw ? raw.defaults : raw;
     return new Exercise(
       row.id,
       row.trainer_id,
       row.name,
       row.description,
       row.workout_type as WorkoutType,
-      typeof row.parameters_template === 'string'
-        ? JSON.parse(row.parameters_template)
-        : row.parameters_template,
+      { defaults: defaults ?? {} },
       row.is_template,
       row.created_at,
       row.updated_at,

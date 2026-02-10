@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DomainException } from '@common/error-handling/domain.exception';
 import { InternalErrorCode } from '@common/error-handling/internal-error-code';
 import { Exercise } from '../../domain/exercise.entity';
+import { filterDefaultsForWorkoutType } from '../../domain/workout-parameters.handler';
+import { validateStepsShape } from '../../domain/workout-steps.validator';
 import {
   CreateExerciseCommand,
   DeleteExerciseCommand,
@@ -23,12 +25,20 @@ export class ExerciseService implements ExerciseInPort {
   ) {}
 
   async createExercise(command: CreateExerciseCommand): Promise<Exercise> {
+    const raw = (command.parametersTemplate.defaults ?? {}) as Record<
+      string,
+      unknown
+    >;
+    const defaults = filterDefaultsForWorkoutType(command.workoutType, raw);
+    if (defaults.steps !== undefined) {
+      validateStepsShape(defaults.steps, command.workoutType);
+    }
     return this.exerciseRepository.create({
       trainerId: command.trainerId,
       name: command.name,
       description: command.description,
       workoutType: command.workoutType,
-      parametersTemplate: command.parametersTemplate,
+      parametersTemplate: { defaults },
       isTemplate: command.isTemplate,
     });
   }

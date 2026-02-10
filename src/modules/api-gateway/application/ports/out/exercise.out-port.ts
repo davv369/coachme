@@ -8,20 +8,7 @@ export interface CreateExerciseRequest {
   name: string;
   description: string;
   workoutType: WorkoutType;
-  parametersTemplate: {
-    schema: {
-      [key: string]: {
-        type: 'number' | 'string' | 'boolean';
-        label: string;
-        unit?: string;
-        min?: number;
-        max?: number;
-        required?: boolean;
-        default?: any;
-      };
-    };
-    defaults: Record<string, any>;
-  };
+  parametersTemplate: { defaults: Record<string, any> };
   isTemplate: boolean;
 }
 
@@ -40,7 +27,7 @@ export interface FindExercisesByWorkoutTypeRequest {
 
 export interface DeleteExerciseRequest {
   id: string;
-  trainerId: string | null; // null for global exercises
+  trainerId: string | null;
 }
 
 export interface ExerciseOutPort {

@@ -1,71 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsString,
-  IsNotEmpty,
-  IsEnum,
-  IsObject,
   IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsObject,
   IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { WorkoutType } from '@modules/exercises/domain/workout-type.enum';
 
-export class ExerciseParameterSchemaDto {
-  @ApiProperty({ enum: ['number', 'string', 'boolean'] })
-  @IsString()
-  @IsNotEmpty()
-  type: 'number' | 'string' | 'boolean';
-
-  @ApiProperty({ description: 'Parameter display name' })
-  @IsString()
-  @IsNotEmpty()
-  label: string;
-
-  @ApiProperty({ description: 'Unit (e.g., km, min, kg)', required: false })
-  @IsOptional()
-  @IsString()
-  unit?: string;
-
-  @ApiProperty({ description: 'Minimum value', required: false })
-  @IsOptional()
-  min?: number;
-
-  @ApiProperty({ description: 'Maximum value', required: false })
-  @IsOptional()
-  max?: number;
-
-  @ApiProperty({
-    description: 'Whether the parameter is required',
-    required: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  required?: boolean;
-
-  @ApiProperty({ description: 'Default value', required: false })
-  @IsOptional()
-  default?: any;
-}
-
 export class ExerciseParametersTemplateDto {
   @ApiProperty({
     type: 'object',
-    additionalProperties: {
-      $ref: '#/components/schemas/ExerciseParameterSchemaDto',
-    },
-    description: 'Schema defining available parameters',
-  })
-  @IsObject()
-  @IsNotEmpty()
-  schema: {
-    [key: string]: ExerciseParameterSchemaDto;
-  };
-
-  @ApiProperty({
-    type: 'object',
     additionalProperties: true,
-    description: 'Default parameter values',
+    description:
+      'Default parameter values (e.g. steps). No schema – FE knows structure per workoutType.',
   })
   @IsObject()
   @IsNotEmpty()
